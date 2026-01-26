@@ -1,18 +1,24 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import React from 'react';
+import RootNavigator from './navigation/RootNavigator';
+import {
+	useFonts,
+	Montserrat_100Thin,
+	Montserrat_900Black,
+} from '@expo-google-fonts/montserrat';
 
 export default function App() {
-	return (
-		<View style={styles.container}>
-			<Text> Hello from React Native 👋</Text>
-		</View>
-	);
+	const [fontsLoaded] = useFonts({
+		Montserrat_100Thin,
+		Montserrat_900Black,
+	});
+	if (!fontsLoaded) {
+		return (
+			<ActivityIndicator
+				size='large'
+				style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+			/>
+		);
+	}
+	return <RootNavigator />;
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-});
