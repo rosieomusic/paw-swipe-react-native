@@ -11,9 +11,12 @@ import { globalStyles } from '@/styles/globalStyles';
 import { typography } from '@/styles/theme';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/navigation/AuthNavigator';
 
-export default function LoginScreen() {
+type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
+
+export default function LoginScreen({ navigation }: Props) {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -26,10 +29,7 @@ export default function LoginScreen() {
 		}
 	};
 	return (
-		<SafeAreaView
-			style={styles.safeArea}
-			edges={[]}
-		>
+		<View style={styles.area}>
 			<Header />
 			<View style={styles.formContainer}>
 				<Text style={typography.heading}>Login</Text>
@@ -53,19 +53,22 @@ export default function LoginScreen() {
 				/>
 				<View style={styles.buttonContainer}>
 					<TouchableOpacity
-						style={styles.button}
+						style={globalStyles.button}
 						onPress={handleLogin}
 					>
-						<Text style={styles.buttonText}>Sign In</Text>
+						<Text style={globalStyles.buttonText}>Sign In</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={styles.button}>
-						<Text style={styles.buttonText}>Register</Text>
+					<TouchableOpacity
+						style={globalStyles.button}
+						onPress={() => navigation.navigate('Register')}
+					>
+						<Text style={globalStyles.buttonText}>Register</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
 			<Footer />
-		</SafeAreaView>
+		</View>
 	);
 }
 const styles = StyleSheet.create({
@@ -75,7 +78,8 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		backgroundColor: '#A9B5CC',
 		width: '90%',
-		marginVertical: 60,
+		marginTop: 40,
+		marginBottom: 40,
 		padding: 20,
 		borderRadius: 12,
 		shadowColor: '#000',
@@ -84,7 +88,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 4,
 		elevation: 5,
 	},
-	safeArea: {
+	area: {
 		flex: 1,
 		justifyContent: 'center',
 		backgroundColor: '#DECEC1',
@@ -94,18 +98,5 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		gap: 10,
-	},
-	button: {
-		backgroundColor: '#5C6E92',
-		padding: 16,
-		borderRadius: 20,
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.2,
-		shadowRadius: 4,
-		elevation: 5,
-	},
-	buttonText: {
-		color: 'white',
 	},
 });

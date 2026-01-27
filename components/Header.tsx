@@ -1,20 +1,23 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { typography, colors } from '../styles/theme';
+import { colors } from '../styles/theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Header() {
 	return (
-		<View style={styles.header}>
-			<Image
-				source={require('../assets/images/FrankiePainted.png')}
-				style={styles.logo}
-			/>
-			<Text style={styles.text}> Paw Swipe</Text>
-			<Image
-				source={require('../assets/images/paw.png')}
-				style={styles.paw}
-			/>
-		</View>
+		<SafeAreaView edges={['top', 'bottom']}>
+			<View style={styles.header}>
+				<Image
+					source={require('../assets/images/FrankiePainted.png')}
+					style={styles.logo}
+				/>
+				<Text style={styles.text}> Paw Swipe</Text>
+				<Image
+					source={require('../assets/images/paw.png')}
+					style={styles.paw}
+				/>
+			</View>
+		</SafeAreaView>
 	);
 }
 
@@ -27,7 +30,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		alignItems: 'center',
-		paddingVertical: 10,
 		width: '100%',
 		height: 100,
 		backgroundColor: colors.header,
