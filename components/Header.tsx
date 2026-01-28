@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Header() {
 	return (
-		<SafeAreaView edges={['top', 'bottom']}>
+		<SafeAreaView edges={['top']}>
 			<View style={styles.header}>
 				<Image
 					source={require('../assets/images/FrankiePainted.png')}

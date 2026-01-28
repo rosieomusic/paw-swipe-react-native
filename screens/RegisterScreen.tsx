@@ -13,6 +13,7 @@ import { globalStyles } from '@/styles/globalStyles';
 import { typography } from '@/styles/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/AuthNavigator';
+import { useAuth } from '@/context/AuthContext';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
@@ -26,6 +27,8 @@ export default function RegisterScreen({ navigation }: Props) {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [role] = useState('USER');
+
+	const { login: setAuth } = useAuth();
 
 	const handleRegister = async () => {
 		setError(null);
@@ -52,6 +55,7 @@ export default function RegisterScreen({ navigation }: Props) {
 				role: 'USER',
 				lastName: lastName || undefined,
 			});
+			setAuth();
 
 			console.log('Register Success');
 		} catch (err: any) {

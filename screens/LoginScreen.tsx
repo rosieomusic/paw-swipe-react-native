@@ -13,6 +13,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/AuthNavigator';
+import { useAuth } from '@/context/AuthContext';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -20,10 +21,12 @@ export default function LoginScreen({ navigation }: Props) {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 
+	const { login: setAuth } = useAuth();
+
 	const handleLogin = async () => {
 		try {
-			const data = await login(username, password);
-			console.log('LOGIN SUCCESS:', data);
+			await login(username, password);
+			setAuth();
 		} catch (err) {
 			console.error('LOGIN ERROR:', err);
 		}
@@ -51,7 +54,7 @@ export default function LoginScreen({ navigation }: Props) {
 					style={globalStyles.input}
 					placeholderTextColor={'#585555'}
 				/>
-				<View style={styles.buttonContainer}>
+				<View style={globalStyles.buttonContainer}>
 					<TouchableOpacity
 						style={globalStyles.button}
 						onPress={handleLogin}
@@ -92,11 +95,5 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		backgroundColor: '#DECEC1',
-	},
-	buttonContainer: {
-		marginTop: 40,
-		flexDirection: 'row',
-		justifyContent: 'center',
-		gap: 10,
 	},
 });

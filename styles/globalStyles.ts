@@ -30,4 +30,10 @@ export const globalStyles = StyleSheet.create({
 	buttonText: {
 		color: 'white',
 	},
+	buttonContainer: {
+		marginTop: 40,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		gap: 10,
+	},
 });

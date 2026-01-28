@@ -1,11 +1,16 @@
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthNavigator from './AuthNavigator';
-import React from 'react';
+import AppNavigator from './AppNavigator';
+import { useAuth } from '@/context/AuthContext';
 
 export default function RootNavigator() {
+	const { isAuthenticated } = useAuth();
+	console.log('AUTH STATE:', isAuthenticated);
+
 	return (
 		<NavigationContainer>
-			<AuthNavigator />
+			{isAuthenticated ? <AppNavigator /> : <AuthNavigator />}
 		</NavigationContainer>
 	);
 }

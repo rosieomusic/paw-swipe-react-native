@@ -6,6 +6,7 @@ import {
 	Montserrat_100Thin,
 	Montserrat_900Black,
 } from '@expo-google-fonts/montserrat';
+import { AuthProvider } from './context/AuthContext';
 
 export default function App() {
 	const [fontsLoaded] = useFonts({
@@ -21,5 +22,9 @@ export default function App() {
 		);
 	}
 
-	return <RootNavigator />;
+	return (
+		<AuthProvider>
+			<RootNavigator />
+		</AuthProvider>
+	);
 }
