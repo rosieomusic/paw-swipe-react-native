@@ -8,21 +8,23 @@ import Footer from '@/components/Footer';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParamList } from '@/navigation/AppNavigator';
 import { colors } from '../styles/theme';
+import FilterBar from '@/components/FilterBar';
+import { Animal } from '@/types/Animal';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
-	const [animals, setAnimals] = useState<any[]>([]);
+	const [animals, setAnimals] = useState<Animal[]>([]);
+	const [filteredAnimals, setFilteredAnimals] = useState<Animal[]>([]);
 	const [loading, setLoading] = useState(true);
-	const swiperRef = useRef<Swiper<any>>(null);
+	const [type, setType] = useState<'DOG' | 'CAT' | null>(null);
+	const [search, setSearch] = useState('');
+	const [cardIndex, setCardIndex] = useState(0);
+	const swiperRef = useRef<Swiper<Animal>>(null);
 
-	useEffect(() => {
-		loadAnimals();
-	}, []);
-
-	const loadAnimals = async () => {
+	const loadAnimals = async (): Promise<void> => {
 		try {
-			const data = await getAnimals();
+			const data: Animal[] = await getAnimals();
 			setAnimals(data);
 		} catch (e) {
 			console.error(e);
@@ -30,6 +32,36 @@ export default function HomeScreen({ navigation }: Props) {
 			setLoading(false);
 		}
 	};
+
+	const applyFilters = (): void => {
+		let result = animals;
+
+		if (type) {
+			result = result.filter((a) => a.type?.toUpperCase() === type);
+		}
+
+		if (search) {
+			result = result.filter((a) =>
+				a.breed?.toLowerCase().includes(search.toLowerCase()),
+			);
+		}
+
+		setFilteredAnimals(result);
+	};
+
+	useEffect(() => {
+		loadAnimals();
+	}, []);
+
+	useEffect(() => {
+		applyFilters();
+	}, [animals, type, search]);
+
+	useEffect(() => {
+		setCardIndex(0);
+		swiperRef.current?.jumpToCardIndex(0);
+	}, [type, search]);
+
 	if (loading) {
 		return <ActivityIndicator style={{ flex: 1 }} />;
 	}
@@ -37,50 +69,50 @@ export default function HomeScreen({ navigation }: Props) {
 	return (
 		<View style={styles.home}>
 			<Header />
-			<View style={styles.container}>
-				<Swiper
-					containerStyle={{ backgroundColor: 'transparent' }}
-					ref={swiperRef}
-					cards={animals}
-					renderCard={(animal) => {
-						if (!animal) return null;
-						return <AnimalCard animal={animal} />;
-					}}
-					onTapCard={(index) => {
-						const animal = animals[index];
 
+			<View style={styles.filterBar}>
+				<FilterBar
+					search={search}
+					onSearchChange={setSearch}
+					type={type}
+					onTypeChange={setType}
+				/>
+			</View>
+
+			<View style={styles.container}>
+				<Swiper<Animal>
+					ref={swiperRef}
+					cards={filteredAnimals}
+					cardIndex={cardIndex}
+					renderCard={(animal) =>
+						animal ? <AnimalCard animal={animal} /> : null
+					}
+					onTapCard={(index) => {
+						const animal = filteredAnimals[index];
 						if (!animal) {
 							console.warn('Tapped card but animal was undefined');
 							return;
 						}
-
-						console.log('Tapped animal:', animal.animalId);
-
-						navigation.navigate('AnimalDetails', {
-							animalId: animal.animalId,
-						});
+						console.log('Tapped animal:', animal.animalId, animal.type);
+						navigation.navigate('AnimalDetails', { animalId: animal.animalId });
 					}}
 					stackSize={3}
-					cardStyle={{ backgroundColor: 'transparent' }}
+					backgroundColor='transparent'
 				/>
 			</View>
-			<View>
-				<Text style={styles.text}>
-					Swipe right to add animal to favorites. {'\n'}Swipe left to skip.{' '}
-					{'\n'} Click on image for more details
-				</Text>
-			</View>
+			<Text style={styles.text}>Click on image for more details {'\n'}</Text>
 
 			<Footer />
 		</View>
 	);
 }
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		zIndex: 1,
 		backgroundColor: 'transparent',
-		justifyContent: 'center',
+		bottom: 30,
 	},
 	home: {
 		flex: 1,
@@ -88,6 +120,10 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		textAlign: 'center',
-		marginBottom: 30,
+		padding: 0,
+		margin: 0,
+	},
+	filterBar: {
+		marginTop: 20,
 	},
 });
